@@ -20,7 +20,7 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Build project
-        run: dotnet build sample-vulnerable-app/sample-vulnerable-app.csproj
+        run: dotnet build sample-app/sample-app.csproj
 
       # After this job runs, check the Actions summary:
       # - You'll see NU1904 warnings in the raw log
@@ -62,7 +62,7 @@ jobs:
           echo "##[add-matcher]${{ runner.temp }}/msbuild.json"
 
       - name: Build project
-        run: dotnet build sample-vulnerable-app/sample-vulnerable-app.csproj
+        run: dotnet build sample-app/sample-app.csproj
 
       # After this job runs, you SHOULD see:
       # - NU1904 warnings as inline annotations on the .csproj file
