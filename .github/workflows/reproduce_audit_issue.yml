@@ -16,6 +16,8 @@ jobs:
 
       - name: Setup .NET (official - no msbuild matcher)
         uses: actions/setup-dotnet@v4
+        # uses: Falco20019/setup-dotnet@feature/msbuild-matcher
+
         with:
           dotnet-version: "8.0.x"
 
@@ -26,44 +28,4 @@ jobs:
       # - You'll see NU1904 warnings in the raw log
       # - But NO annotations appear on the files or in the summary
 
-  build-with-matcher:
-    name: "Build WITH msbuild matcher (PR #605 fix)"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.0.x"
-
-      # Manually register the msbuild problem matcher (simulating PR #605)
-      - name: Add msbuild problem matcher manually
-        run: |
-          cat <<'EOF' > ${{ runner.temp }}/msbuild.json
-          {
-            "problemMatcher": [
-              {
-                "owner": "msbuild",
-                "pattern": [
-                  {
-                    "regexp": "^([^\\s].*)\\s+:\\s+(error|warning)\\s+([a-zA-Z]+(?<!MSB)\\d+):\\s*(.*?)\\s+\\[(.*?)\\]$",
-                    "file": 1,
-                    "severity": 2,
-                    "code": 3,
-                    "message": 4,
-                    "fromPath": 5
-                  }
-                ]
-              }
-            ]
-          }
-          EOF
-          echo "##[add-matcher]${{ runner.temp }}/msbuild.json"
-
-      - name: Build project
-        run: dotnet build sample-app/sample-app.csproj
-
-      # After this job runs, you SHOULD see:
-      # - NU1904 warnings as inline annotations on the .csproj file
-      # - Warning annotations in the Actions job summary
+ 
