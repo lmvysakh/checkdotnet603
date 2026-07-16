@@ -14,18 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET (official - no msbuild matcher)
-        # uses: actions/setup-dotnet@v4
-        uses: Falco20019/setup-dotnet@feature/msbuild-matcher
-
+      - name: Setup .NET 
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
 
       - name: Build project
         run: dotnet build sample-app/sample-app.csproj
 
-      # After this job runs, check the Actions summary:
-      # - You'll see NU1904 warnings in the raw log
-      # - But NO annotations appear on the files or in the summary
+
 
  
