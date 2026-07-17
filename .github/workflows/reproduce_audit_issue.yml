@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Setup .NET 
-        # uses: actions/setup-dotnet@v6
-        uses: Falco20019/setup-dotnet@feature/msbuild-matcher
+        uses: actions/setup-dotnet@v6
+        # uses: Falco20019/setup-dotnet@feature/msbuild-matcher
         with:
           dotnet-version: "8.0.x"
 
@@ -25,4 +25,40 @@ jobs:
 
 
 
- 
+  build-with-matcher:
+      name: "Build WITH msbuild matcher"
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: "8.0.x"
+
+        # Manually register the msbuild problem matcher (simulating PR #605)
+        - name: Add msbuild problem matcher manually
+          run: |
+            cat <<'EOF' > ${{ runner.temp }}/msbuild.json
+            {
+              "problemMatcher": [
+                {
+                  "owner": "msbuild",
+                  "pattern": [
+                    {
+                      "regexp": "^([^\\s].*)\\s+:\\s+(error|warning)\\s+([a-zA-Z]+(?<!MSB)\\d+):\\s*(.*?)(?:\\s+\\[(.*?)\\])?$",
+                      "file": 1,
+                      "severity": 2,
+                      "code": 3,
+                      "message": 4,
+                      "fromPath": 5
+                    }
+                  ]
+                }
+              ]
+            }
+            EOF
+            echo "##[add-matcher]${{ runner.temp }}/msbuild.json"
+        
+        - name: Build project
+          run: dotnet build sample-app/sample-app.csproj
