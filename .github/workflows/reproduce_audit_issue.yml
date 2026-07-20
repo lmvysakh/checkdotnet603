@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Setup .NET 
-        uses: actions/setup-dotnet@v6
+        # uses: actions/setup-dotnet@v6
         # uses: Falco20019/setup-dotnet@feature/msbuild-matcher
         uses: lmvysakh/setup-dotnet@msbuild_prblmmatcher
         with:
